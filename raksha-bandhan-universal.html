@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raksha Bandhan — The Bond</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --maroon: #4a0e0e;
+    --maroon-deep: #2a0808;
+    --gold: #d4af37;
+    --gold-bright: #f4d675;
+    --cream: #f5ead6;
+  }
+  body.light-theme {
+    --maroon: #fff6e8;
+    --maroon-deep: #fdf3e0;
+    --gold: #b8860b;
+    --gold-bright: #8a6206;
+    --cream: #3a2a10;
+  }
+  body.vibe-playful { --gold: #e08a3c; --gold-bright: #f4a95f; }
+  body.vibe-funny { --gold: #d46bb0; --gold-bright: #f193d1; }
+  body {
+    background: var(--maroon-deep);
+    font-family: 'Segoe UI', sans-serif;
+    color: var(--cream);
+    overflow-x: hidden;
+    min-height: 100vh;
+    transition: background 0.4s, color 0.4s;
+  }
+  #bg-canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+
+  /* ---------- FORM SCREEN ---------- */
+  #form-screen {
+    position: relative; z-index: 2;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem;
+  }
+  .form-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(212,175,55,0.4);
+    border-radius: 18px;
+    padding: 2.2rem 1.8rem;
+    max-width: 420px;
+    width: 100%;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 40px rgba(212,175,55,0.15);
+  }
+  .form-card .eyebrow {
+    color: var(--gold);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .form-card h1 {
+    font-size: 1.7rem;
+    color: var(--cream);
+    margin-bottom: 1.6rem;
+    line-height: 1.3;
+  }
+  .field { margin-bottom: 1.1rem; opacity: 0; transform: translateY(14px); animation: fieldIn 0.6s ease forwards; }
+  .field:nth-child(1) { animation-delay: 0.1s; }
+  .field:nth-child(2) { animation-delay: 0.22s; }
+  .field:nth-child(3) { animation-delay: 0.34s; }
+  .field:nth-child(4) { animation-delay: 0.46s; }
+  @keyframes fieldIn { to { opacity: 1; transform: translateY(0); } }
+  .field label {
+    display: block;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: var(--gold-bright);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(212,175,55,0.35);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+    color: var(--cream);
+    font-size: 0.95rem;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.35s, box-shadow 0.35s, background 0.35s;
+  }
+  .field input:focus, .field textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.15), 0 0 18px rgba(212,175,55,0.35);
+    background: rgba(255,255,255,0.09);
+  }
+  .field input:valid:not(:placeholder-shown) { border-color: rgba(212,175,55,0.6); }
+  .field select {
+    width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(212,175,55,0.35);
+    border-radius: 10px; padding: 0.65rem 0.8rem; color: var(--cream); font-family: inherit; font-size: 0.9rem;
+  }
+  .field select option { background: #2a0808; color: var(--cream); }
+  .field textarea { resize: vertical; min-height: 70px; }
+  .field.file-field label.file-btn {
+    display: inline-block;
+    background: rgba(212,175,55,0.12);
+    border: 1px dashed rgba(212,175,55,0.5);
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--gold-bright);
+  }
+  .field.file-field input[type=file] { display: none; }
+  #photo-preview {
+    margin-top: 0.6rem; width: 60px; height: 60px;
+    border-radius: 50%; object-fit: cover;
+    border: 2px solid var(--gold);
+    display: none;
+  }
+  .submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--gold), #a9812c);
+    border: none;
+    padding: 0.9rem;
+    border-radius: 12px;
+    color: #2a1a00;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    box-shadow: 0 0 25px rgba(212,175,55,0.4);
+    position: relative;
+    overflow: hidden;
+    opacity: 0; transform: translateY(14px); animation: fieldIn 0.6s ease forwards 0.58s;
+    transition: transform 0.15s;
+  }
+  .submit-btn:active { transform: scale(0.97); }
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    transform: scale(0);
+    animation: rippleAnim 0.6s ease-out;
+    pointer-events: none;
+  }
+  @keyframes rippleAnim { to { transform: scale(3); opacity: 0; } }
+  .form-hint { font-size: 0.7rem; color: #b8a; margin-top: 0.8rem; text-align: center; opacity: 0; animation: fieldIn 0.6s ease forwards 0.7s; }
+  .usage-counter { font-size: 0.65rem; color: var(--gold-bright); text-align: center; margin-top: 0.5rem; opacity: 0; animation: fieldIn 0.6s ease forwards 0.8s; letter-spacing: 0.05em; }
+
+  /* ---------- transition loader ---------- */
+  #loader-overlay {
+    position: fixed; inset: 0; z-index: 50;
+    background: var(--maroon-deep);
+    display: none;
+    align-items: center; justify-content: center;
+    flex-direction: column;
+  }
+  #loader-overlay.active { display: flex; }
+  .loader-thread {
+    width: 90px; height: 90px; margin-bottom: 1.2rem;
+  }
+  .loader-thread svg { width: 100%; height: 100%; }
+  .loader-thread circle.track { fill: none; stroke: rgba(212,175,55,0.2); stroke-width: 5; }
+  .loader-thread circle.spin {
+    fill: none; stroke: var(--gold-bright); stroke-width: 5; stroke-linecap: round;
+    stroke-dasharray: 220; stroke-dashoffset: 160;
+    transform-origin: center;
+    animation: loaderSpin 1s linear infinite;
+    filter: drop-shadow(0 0 6px var(--gold-bright));
+  }
+  @keyframes loaderSpin { to { transform: rotate(360deg); } }
+  .loader-text {
+    color: var(--gold-bright); letter-spacing: 0.2em; font-size: 0.8rem; text-transform: uppercase;
+    animation: pulseText 1.4s ease-in-out infinite;
+  }
+  @keyframes pulseText { 0%,100%{opacity:0.5;} 50%{opacity:1;} }
+
+  /* confetti */
+  .confetti-piece {
+    position: fixed; top: -20px; z-index: 60; pointer-events: none;
+    border-radius: 2px;
+    animation: confettiFall linear forwards;
+  }
+  @keyframes confettiFall {
+    to { transform: translateY(105vh) rotate(540deg); opacity: 0.3; }
+  }
+
+  /* ---------- MAIN SITE ---------- */
+  #site {
+    display: none;
+    position: relative; z-index: 1;
+  }
+  .topbar {
+    position: fixed; top: 1rem; right: 1rem; z-index: 20;
+    display: flex; gap: 0.6rem;
+  }
+  .icon-btn {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(212,175,55,0.4);
+    color: var(--gold-bright);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  /* entrance */
+  #entrance {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+  .thread-wrap { position: relative; width: 160px; height: 160px; margin-bottom: 2rem; }
+  svg#rakhi-svg { width: 100%; height: 100%; }
+  #thread-path {
+    stroke: var(--gold);
+    stroke-width: 4;
+    fill: none;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 8px var(--gold-bright));
+    stroke-dasharray: 300;
+    stroke-dashoffset: 300;
+    animation: tie 2.2s ease forwards 0.3s;
+  }
+  @keyframes tie { to { stroke-dashoffset: 0; } }
+  #wrist-circle {
+    fill: none; stroke: rgba(245,234,214,0.3); stroke-width: 6;
+  }
+  .entrance-title {
+    font-size: clamp(1.6rem, 6vw, 2.6rem);
+    color: var(--cream);
+    letter-spacing: 0.05em;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 2.2s;
+  }
+  .entrance-sub {
+    color: var(--gold-bright);
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    margin-top: 0.7rem;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 2.6s;
+  }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(15px);} to { opacity:1; transform:translateY(0);} }
+  .countdown {
+    margin-top: 2rem;
+    display: flex; gap: 0.8rem;
+    opacity: 0;
+    animation: fadeUp 1.2s ease forwards 3s;
+  }
+  .countdown div {
+    background: rgba(212,175,55,0.1);
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 10px;
+    padding: 0.6rem 0.9rem;
+    min-width: 60px;
+    text-align: center;
+  }
+  .countdown .num { font-size: 1.3rem; color: var(--gold-bright); font-weight: 700; }
+  .countdown .lbl { font-size: 0.6rem; letter-spacing: 0.1em; color: #cba; text-transform: uppercase; }
+  .scroll-cue {
+    margin-top: 3rem; font-size: 0.7rem; letter-spacing: 0.2em; color: var(--gold);
+    opacity: 0; animation: fadeUp 1.2s ease forwards 3.4s, bob 2s ease-in-out infinite 4.6s;
+  }
+  @keyframes bob { 0%,100%{transform:translateY(0);} 50%{transform:translateY(8px);} }
+
+  /* cards section */
+  .section { padding: 5rem 1.2rem; position: relative; }
+  .section-title {
+    text-align: center;
+    font-size: 1rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 2.5rem;
+  }
+  .thread-line {
+    position: relative;
+    height: 2px;
+    max-width: 900px;
+    margin: 0 auto 3rem;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+  .cards-grid {
+    display: flex; flex-wrap: wrap; gap: 1.4rem; justify-content: center;
+    perspective: 1200px;
+    max-width: 1000px; margin: 0 auto;
+  }
+  .card {
+    width: 230px; min-height: 280px;
+    border-radius: 16px;
+    background: linear-gradient(160deg, rgba(212,175,55,0.08), rgba(255,255,255,0.02));
+    border: 1px solid rgba(212,175,55,0.35);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 25px rgba(212,175,55,0.1);
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out, box-shadow 0.3s;
+    padding: 1.6rem 1.4rem;
+    display: flex; flex-direction: column;
+    cursor: pointer;
+  }
+  .card:hover { box-shadow: 0 0 40px rgba(212,175,55,0.35); border-color: var(--gold); }
+  .card .icon { font-size: 1.8rem; margin-bottom: 0.9rem; filter: drop-shadow(0 0 8px var(--gold-bright)); }
+  .card h3 { font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--gold-bright); margin-bottom: 0.6rem; }
+  .card p { font-size: 0.85rem; line-height: 1.6; color: #e5d8bf; }
+  .card .flip-hint { margin-top: auto; font-size: 0.65rem; color: #b89; opacity: 0.6; padding-top: 0.8rem; }
+  .card.flipped p.front-text { display: none; }
+  .card p.back-text { display: none; }
+  .card.flipped p.back-text { display: block; }
+
+  /* photo memory card */
+  .photo-card img { width: 100%; border-radius: 10px; margin-bottom: 0.8rem; object-fit: cover; max-height: 140px; }
+
+  /* finale */
+  .finale-wrap { max-width: 560px; margin: 0 auto; text-align: center; }
+  .finale-card {
+    background: linear-gradient(160deg, rgba(212,175,55,0.12), rgba(255,255,255,0.02));
+    border: 1px solid var(--gold);
+    border-radius: 20px;
+    padding: 2.4rem 1.8rem;
+    box-shadow: 0 0 45px rgba(212,175,55,0.25);
+  }
+  .finale-card .icon { font-size: 2.2rem; margin-bottom: 1rem; }
+  .finale-card h2 { font-size: 1.3rem; color: var(--gold-bright); margin-bottom: 1rem; letter-spacing: 0.05em; }
+  .finale-card p { font-size: 0.95rem; line-height: 1.8; color: var(--cream); white-space: pre-wrap; }
+  .actions { display: flex; gap: 0.8rem; justify-content: center; margin-top: 1.8rem; flex-wrap: wrap; }
+  .btn {
+    border: none; border-radius: 30px; padding: 0.75rem 1.4rem;
+    font-size: 0.8rem; letter-spacing: 0.05em; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .btn.whatsapp { background: #25D366; color: #063; font-weight: 600; }
+  .btn.download { background: rgba(212,175,55,0.15); color: var(--gold-bright); border: 1px solid var(--gold); }
+
+  /* tie the rakhi interaction */
+  .tie-wrap {
+    max-width: 320px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between;
+    background: rgba(212,175,55,0.06); border: 1px dashed rgba(212,175,55,0.4);
+    border-radius: 20px; padding: 2.5rem 2rem; position: relative;
+  }
+  .wrist-target {
+    font-size: 3rem; width: 90px; height: 90px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px dashed rgba(212,175,55,0.5);
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+  .wrist-target.drop-hover { border-color: var(--gold-bright); background: rgba(212,175,55,0.15); transform: scale(1.06); }
+  .wrist-target.tied { border-style: solid; border-color: var(--gold); }
+  .rakhi-drag {
+    font-size: 2.4rem; cursor: grab; touch-action: none;
+    filter: drop-shadow(0 0 10px rgba(212,175,55,0.6));
+    animation: dangle 2s ease-in-out infinite;
+  }
+  .rakhi-drag.tied { display: none; }
+  @keyframes dangle { 0%,100%{transform:rotate(-6deg);} 50%{transform:rotate(6deg);} }
+  .tie-hint { text-align: center; margin-top: 1.2rem; font-size: 0.75rem; color: var(--gold-bright); letter-spacing: 0.05em; }
+  .tie-hint.done { color: #9fdca0; }
+
+  /* scratch-to-reveal card */
+  .scratch-zone { position: relative; flex: 1; min-height: 150px; border-radius: 10px; overflow: hidden; }
+  .scratch-zone .always-visible { position: absolute; inset: 0; padding: 0.6rem; display: flex; align-items: center; }
+  .scratch-canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: pointer; touch-action: none; }
+  .scratch-card.revealed .scratch-canvas { display: none; }
+
+  /* photo gallery */
+  .gallery { position: relative; width: 100%; height: 140px; border-radius: 10px; overflow: hidden; margin-bottom: 0.8rem; background: rgba(0,0,0,0.2); }
+  .gallery img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 0.5s; }
+  .gallery img.active { opacity: 1; }
+  .gallery-nav { display: flex; align-items: center; justify-content: center; gap: 0.8rem; margin-top: 0.4rem; }
+  .gallery-nav button {
+    background: rgba(212,175,55,0.15); border: 1px solid var(--gold); color: var(--gold-bright);
+    border-radius: 50%; width: 26px; height: 26px; cursor: pointer; font-size: 0.9rem;
+  }
+  .gallery-nav span { font-size: 0.7rem; color: #cba; }
+
+  /* reaction burst */
+  .reaction-emoji { position: fixed; z-index: 60; pointer-events: none; font-size: 1.6rem; animation: floatUp 2.4s ease-out forwards; }
+  @keyframes floatUp { to { transform: translateY(-220px) scale(1.4); opacity: 0; } }
+
+  /* credit tag */
+  .credit-tag { text-align: center; font-size: 0.65rem; letter-spacing: 0.1em; color: var(--gold); opacity: 0.55; padding-bottom: 1.4rem; }
+  footer { text-align: center; padding: 2rem 1rem 1rem; font-size: 0.7rem; color: #a98; opacity: 0.6; }
+
+  @media (max-width: 480px) {
+    .card { width: 100%; max-width: 320px; }
+  }
+
+  /* sibling rows in form */
+  .sibling-row { display: flex; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .sibling-row input {
+    flex: 1; background: rgba(255,255,255,0.06); border: 1px solid rgba(212,175,55,0.35);
+    border-radius: 10px; padding: 0.6rem 0.8rem; color: var(--cream); font-family: inherit; font-size: 0.9rem;
+  }
+  .sibling-row button {
+    background: rgba(200,60,60,0.2); border: 1px solid rgba(200,60,60,0.5); color: #f5c5c5;
+    border-radius: 8px; padding: 0 0.7rem; cursor: pointer; font-size: 0.9rem;
+  }
+
+  /* QR section */
+  .qr-box { margin-top: 1.6rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; }
+  .qr-box #qrcode { background: #fff; padding: 8px; border-radius: 10px; }
+  .qr-label { font-size: 0.7rem; letter-spacing: 0.1em; color: var(--gold-bright); text-transform: uppercase; }
+
+  /* print styles */
+  @media print {
+    #bg-canvas, .topbar, #entrance .scroll-cue, .actions, #loader-overlay, .confetti-piece,
+    .card .flip-hint, .field.file-field, audio, #tie-section, #reaction-btn, .gallery-nav { display: none !important; }
+    #cards-section, #finale-section { display: block !important; }
+    body { background: #fff !important; color: #2a0808 !important; }
+    .section, #entrance { padding: 1rem 0.5rem !important; }
+    .card, .finale-card { break-inside: avoid; border: 1px solid #d4af37 !important; box-shadow: none !important; }
+    .card p.back-text { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<canvas id="bg-canvas"></canvas>
+
+<!-- ============ FORM SCREEN ============ -->
+<div id="form-screen">
+  <div class="form-card">
+    <div class="eyebrow">Raksha Bandhan · The Bond</div>
+    <h1 id="form-title-text">Apni khud ki hologram website banao</h1>
+    <form id="rakhi-form">
+      <div class="field">
+        <label for="sisterName">Behen ka naam</label>
+        <input type="text" id="sisterName" placeholder="e.g. Rashi" required>
+      </div>
+      <div class="field">
+        <label for="brotherName">Bhai ka naam</label>
+        <input type="text" id="brotherName" placeholder="e.g. Aayush" required>
+      </div>
+      <div class="field">
+        <label for="message">Special message (optional)</label>
+        <textarea id="message" placeholder="Apni taraf se ek pyara message likho..."></textarea>
+      </div>
+      <div class="field file-field">
+        <label class="file-btn" for="photoInput">📷 Photo add karo (optional, multiple bhi chal jayenge)</label>
+        <input type="file" id="photoInput" accept="image/*" multiple>
+        <br><img id="photo-preview">
+      </div>
+      <div class="field">
+        <label for="vibeSelect">Vibe</label>
+        <select id="vibeSelect">
+          <option value="emotional">Emotional 🥺</option>
+          <option value="playful">Playful 😄</option>
+          <option value="funny">Funny 😂</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="designSelect">Rakhi design</label>
+        <select id="designSelect">
+          <option value="thread">Simple Thread 🧵</option>
+          <option value="kalash">Kalash 🪔</option>
+          <option value="rudraksha">Rudraksha 📿</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Additional siblings (optional)</label>
+        <div id="siblings-list"></div>
+        <button type="button" class="file-btn" id="add-sibling-btn" style="cursor:pointer;">+ Ek aur bhai/behen add karo</button>
+      </div>
+      <div class="field file-field">
+        <label>Voice message (optional)</label>
+        <button type="button" class="file-btn" id="record-btn">🎙 Record karo</button>
+        <span id="record-status" style="font-size:0.75rem; margin-left:0.5rem; color:#cba;"></span>
+        <br><audio id="voice-preview" controls style="display:none; margin-top:0.6rem; width:100%;"></audio>
+      </div>
+      <button type="submit" class="submit-btn" id="submit-btn-text">Website Banao ✦</button>
+    </form>
+    <div class="form-hint">Sab kuch tumhare device mein hi rehta hai — kahin upload nahi hota</div>
+    <div class="usage-counter" id="usage-counter"></div>
+  </div>
+</div>
+
+<!-- ============ LOADER TRANSITION ============ -->
+<div id="loader-overlay">
+  <div class="loader-thread">
+    <svg viewBox="0 0 90 90">
+      <circle class="track" cx="45" cy="45" r="38"/>
+      <circle class="spin" cx="45" cy="45" r="38"/>
+    </svg>
+  </div>
+  <div class="loader-text" id="loader-text">Tying the thread…</div>
+</div>
+
+<!-- ============ MAIN SITE ============ -->
+<div id="site">
+  <div class="topbar">
+    <button class="icon-btn" id="theme-toggle" title="Theme">🌙</button>
+    <button class="icon-btn" id="lang-toggle" title="Language">EN</button>
+    <button class="icon-btn" id="sound-toggle" title="Ambient sound">🔇</button>
+    <button class="icon-btn" id="print-btn" title="Print">🖨</button>
+    <button class="icon-btn" id="replay-btn" title="Replay entrance">🔁</button>
+    <button class="icon-btn" id="restart-btn" title="Start over">↺</button>
+  </div>
+  <button class="icon-btn" id="reaction-btn" title="Send love" style="position:fixed; bottom:1.4rem; right:1.4rem; z-index:20; width:52px; height:52px; font-size:1.3rem;">🌸</button>
+
+  <section id="entrance">
+    <div class="thread-wrap">
+      <svg id="rakhi-svg" viewBox="0 0 160 160">
+        <circle id="wrist-circle" cx="80" cy="80" r="55"/>
+        <path id="thread-path" d="M 30 80 A 50 50 0 1 1 130 80 A 50 50 0 1 1 30 80" />
+        <circle cx="80" cy="30" r="8" fill="#d4af37" filter="drop-shadow(0 0 6px #f4d675)"/>
+      </svg>
+    </div>
+    <div class="entrance-title" id="entrance-title">Ek dhaaga, ek vaada</div>
+    <div class="entrance-sub" id="entrance-sub">— for <span id="sub-names"></span> —</div>
+    <div class="countdown" id="countdown">
+      <div><div class="num" id="cd-days">-</div><div class="lbl">Days</div></div>
+      <div><div class="num" id="cd-hours">-</div><div class="lbl">Hrs</div></div>
+      <div><div class="num" id="cd-mins">-</div><div class="lbl">Min</div></div>
+    </div>
+    <div class="scroll-cue">▼ scroll to open the bond</div>
+  </section>
+
+  <section class="section" id="tie-section">
+    <div class="section-title" id="tie-title">Rakhi baandho</div>
+    <div class="tie-wrap">
+      <div class="wrist-target" id="wrist-target">✋</div>
+      <div class="rakhi-drag" id="rakhi-drag" draggable="true">🧵</div>
+    </div>
+    <div class="tie-hint" id="tie-hint">Thread ko haath tak khींचो / drag the thread onto the hand</div>
+  </section>
+
+  <section class="section" id="cards-section" style="display:none;">
+    <div class="section-title" id="section-title-text">The Bond</div>
+    <div class="thread-line"></div>
+    <div class="cards-grid">
+      <div class="card" data-tilt onclick="this.classList.toggle('flipped'); if(navigator.vibrate) navigator.vibrate(15);">
+        <div class="icon">🧵</div>
+        <h3>Raksha</h3>
+        <p class="front-text" id="card-raksha-front"></p>
+        <p class="back-text" id="card-raksha-back"></p>
+        <div class="flip-hint">tap to flip</div>
+      </div>
+      <div class="card scratch-card" data-tilt id="memory-card-el">
+        <div class="icon">✨</div>
+        <h3>Yaadein</h3>
+        <div class="scratch-zone">
+          <p class="back-text always-visible" id="card-memory-back"></p>
+          <canvas class="scratch-canvas" id="scratch-canvas"></canvas>
+        </div>
+        <div class="flip-hint" id="scratch-hint">scratch to reveal</div>
+      </div>
+      <div class="card" data-tilt onclick="this.classList.toggle('flipped'); if(navigator.vibrate) navigator.vibrate(15);">
+        <div class="icon">🤝</div>
+        <h3>Vaada</h3>
+        <p class="front-text" id="card-promise-front"></p>
+        <p class="back-text" id="card-promise-back"></p>
+        <div class="flip-hint">tap to flip</div>
+      </div>
+      <div class="card photo-card" data-tilt id="photo-card-el" style="display:none;">
+        <div class="gallery" id="photo-gallery"></div>
+        <h3>Tasveer</h3>
+        <p id="photo-caption">Ek pal, hamesha ke liye.</p>
+        <div class="gallery-nav" id="gallery-nav" style="display:none;">
+          <button type="button" id="gallery-prev">‹</button>
+          <span id="gallery-count"></span>
+          <button type="button" id="gallery-next">›</button>
+        </div>
+      </div>
+    </div>
+    <div class="cards-grid" id="extra-siblings-grid" style="margin-top:1.4rem;"></div>
+  </section>
+
+  <section class="section" id="finale-section" style="display:none;">
+    <div class="finale-wrap">
+      <div class="finale-card">
+        <div class="icon">🪔</div>
+        <h2 id="finale-heading"></h2>
+        <p id="finale-message"></p>
+        <div class="actions">
+          <button class="btn whatsapp" id="whatsapp-btn">💬 WhatsApp pe bhejo</button>
+          <button class="btn download" id="download-btn">⬇ Wish Card Download karo</button>
+        </div>
+        <div class="qr-box">
+          <div class="qr-label">Scan karke share karo</div>
+          <div id="qrcode"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Made with a thread of gold, for every brother and sister</footer>
+  <div class="credit-tag">✦ crafted by Aayush</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+let data = { sister: '', brother: '', message: '', photos: [], siblings: [], voice: '', vibe: 'emotional', design: 'thread' };
+let lang = 'hi';
+let theme = 'dark';
+(function autoTheme() {
+  const hour = new Date().getHours();
+  const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+  const isDaytime = hour >= 7 && hour < 18;
+  if (prefersLight || isDaytime) {
+    theme = 'light';
+    document.addEventListener('DOMContentLoaded', () => {
+      document.body.classList.add('light-theme');
+      document.getElementById('theme-toggle').textContent = '☀';
+    });
+  }
+})();
+let galleryIndex = 0;
+
+// ---------- translations ----------
+const T = {
+  hi: {
+    entranceTitle: 'Ek dhaaga, ek vaada',
+    tieTitle: 'Rakhi baandho', tieHint: 'Thread ko haath tak drag karo',
+    sectionTitle: 'The Bond',
+    cardRaksha: 'Raksha', cardMemory: 'Yaadein', cardPromise: 'Vaada', cardPhoto: 'Tasveer',
+    flipHint: 'tap to flip',
+    whatsappBtn: '💬 WhatsApp pe bhejo', downloadBtn: '⬇ Wish Card Download karo',
+    qrLabel: 'Scan karke share karo',
+    footer: 'Made with a thread of gold, for every brother and sister',
+    formTitle: 'Apni khud ki hologram website banao',
+    sisterLabel: 'Behen ka naam', brotherLabel: 'Bhai ka naam',
+    messageLabel: 'Special message (optional)', photoLabel: '📷 Photo add karo (optional)',
+    siblingsLabel: 'Additional siblings (optional)', addSiblingBtn: '+ Ek aur bhai/behen add karo',
+    voiceLabel: 'Voice message (optional)', recordBtn: '🎙 Record karo', recordingBtn: '⏹ Stop karo',
+    submitBtn: 'Website Banao ✦', formHint: 'Sab kuch tumhare device mein hi rehta hai — kahin upload nahi hota',
+    photoCaption: 'Ek pal, hamesha ke liye.',
+    raksha: (s,b) => [`${s} ki taraf se ${b} ke liye ek dhaaga — pyaar aur raksha ka pratik.`, `Jab tak yeh dhaaga hai, ${b} hamesha ${s} ki dhaal banega.`],
+    memory: (s,b) => [`${s} aur ${b} ki har yaad ek kahani hai.`, `Bachpan ki ladaiyan, chhupke se khilaye gaye chocolate, aur har rakhi pe wahi masti — kabhi na bhoolne wali yaadein.`],
+    promise: (s,b) => [`${b} ka is saal ka vaada.`, `Har mushkil mein saath khada rahunga, ${s}. Yeh vaada hai mera.`],
+    siblingCard: (name) => [`${name} ke liye bhi wahi pyaar.`, `Yeh dhaaga sirf ek nahi, har bandhan ke liye hai, ${name}.`],
+    finaleHeading: (s) => `Happy Raksha Bandhan, ${s} ❤`,
+    finaleDefault: (s,b) => `${b} ki taraf se ${s} ke liye — is dhaage ke saath baandha hai pyaar, raksha, aur ek zindagi bhar ka vaada. Happy Raksha Bandhan!`,
+    waDefault: (s) => `Happy Raksha Bandhan ${s}! Yeh raha tumhara special website 🧵❤`,
+    loaderText: (s,b) => `Tying the thread for ${s} & ${b}…`,
+  },
+  en: {
+    entranceTitle: 'One thread, one promise',
+    tieTitle: 'Tie the Rakhi', tieHint: 'Drag the thread onto the hand',
+    sectionTitle: 'The Bond',
+    cardRaksha: 'Protection', cardMemory: 'Memories', cardPromise: 'Promise', cardPhoto: 'Photo',
+    flipHint: 'tap to flip',
+    whatsappBtn: '💬 Send on WhatsApp', downloadBtn: '⬇ Download Wish Card',
+    qrLabel: 'Scan to share',
+    footer: 'Made with a thread of gold, for every brother and sister',
+    formTitle: 'Build your own hologram website',
+    sisterLabel: "Sister's name", brotherLabel: "Brother's name",
+    messageLabel: 'Special message (optional)', photoLabel: '📷 Add a photo (optional)',
+    siblingsLabel: 'Additional siblings (optional)', addSiblingBtn: '+ Add another sibling',
+    voiceLabel: 'Voice message (optional)', recordBtn: '🎙 Record', recordingBtn: '⏹ Stop',
+    submitBtn: 'Build the Website ✦', formHint: 'Everything stays on your device — nothing is uploaded anywhere',
+    photoCaption: 'One moment, forever.',
+    raksha: (s,b) => [`A thread from ${s} to ${b} — a symbol of love and protection.`, `As long as this thread holds, ${b} will always be ${s}'s shield.`],
+    memory: (s,b) => [`Every memory between ${s} and ${b} is a story.`, `Childhood fights, secretly shared chocolates, the same joy every Rakhi — memories that never fade.`],
+    promise: (s,b) => [`${b}'s promise for this year.`, `I'll stand by you through every difficulty, ${s}. That's my promise.`],
+    siblingCard: (name) => [`The same love, for ${name} too.`, `This thread isn't for one bond, but every bond, ${name}.`],
+    finaleHeading: (s) => `Happy Raksha Bandhan, ${s} ❤`,
+    finaleDefault: (s,b) => `From ${b} to ${s} — this thread ties love, protection, and a lifelong promise. Happy Raksha Bandhan!`,
+    waDefault: (s) => `Happy Raksha Bandhan ${s}! Here's your special website 🧵❤`,
+    loaderText: (s,b) => `Tying the thread for ${s} & ${b}…`,
+  }
+};
+
+// ---------- form handling ----------
+const photoInput = document.getElementById('photoInput');
+const photoPreview = document.getElementById('photo-preview');
+photoInput.addEventListener('change', () => {
+  const files = Array.from(photoInput.files).slice(0, 6); // cap at 6 for sanity
+  if (!files.length) return;
+  data.photos = [];
+  photoPreview.style.display = 'none';
+  let loaded = 0;
+  files.forEach((file, i) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      data.photos[i] = e.target.result;
+      loaded++;
+      if (i === 0) { photoPreview.src = e.target.result; photoPreview.style.display = 'block'; }
+    };
+    reader.readAsDataURL(file);
+  });
+});
+
+// ---------- additional siblings ----------
+const siblingsList = document.getElementById('siblings-list');
+document.getElementById('add-sibling-btn').addEventListener('click', () => {
+  const row = document.createElement('div');
+  row.className = 'sibling-row';
+  row.innerHTML = `<input type="text" class="sibling-input" placeholder="Sibling's name">
+    <button type="button" class="remove-sibling">✕</button>`;
+  row.querySelector('.remove-sibling').addEventListener('click', () => row.remove());
+  siblingsList.appendChild(row);
+});
+
+// ---------- voice recording ----------
+let mediaRecorder = null, audioChunks = [], isRecording = false;
+const recordBtn = document.getElementById('record-btn');
+const recordStatus = document.getElementById('record-status');
+const voicePreview = document.getElementById('voice-preview');
+recordBtn.addEventListener('click', async () => {
+  if (!isRecording) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const reader = new FileReader();
+        reader.onload = (e) => { data.voice = e.target.result; };
+        reader.readAsDataURL(blob);
+        voicePreview.src = URL.createObjectURL(blob);
+        voicePreview.style.display = 'block';
+        stream.getTracks().forEach(t => t.stop());
+      };
+      mediaRecorder.start();
+      isRecording = true;
+      recordBtn.textContent = T[lang].recordingBtn;
+      recordStatus.textContent = '● recording…';
+    } catch (err) {
+      recordStatus.textContent = 'Mic access nahi mili';
+    }
+  } else {
+    mediaRecorder.stop();
+    isRecording = false;
+    recordBtn.textContent = T[lang].recordBtn;
+    recordStatus.textContent = 'saved ✓';
+  }
+});
+
+const submitBtn = document.querySelector('.submit-btn');
+submitBtn.addEventListener('click', (e) => {
+  // ripple effect at click point
+  const r = submitBtn.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const size = Math.max(r.width, r.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - r.left - size / 2) + 'px';
+  ripple.style.top = (e.clientY - r.top - size / 2) + 'px';
+  submitBtn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 650);
+});
+
+document.getElementById('rakhi-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  data.sister = document.getElementById('sisterName').value.trim() || 'Sister';
+  data.brother = document.getElementById('brotherName').value.trim() || 'Brother';
+  data.message = document.getElementById('message').value.trim();
+  data.siblings = Array.from(document.querySelectorAll('.sibling-input'))
+    .map(inp => inp.value.trim()).filter(Boolean);
+  data.vibe = document.getElementById('vibeSelect').value;
+  data.design = document.getElementById('designSelect').value;
+
+  const loader = document.getElementById('loader-overlay');
+  document.getElementById('loader-text').textContent = T[lang].loaderText(data.sister, data.brother);
+  loader.classList.add('active');
+
+  setTimeout(() => {
+    buildSite();
+    bumpUsageCount();
+    document.getElementById('form-screen').style.display = 'none';
+    document.getElementById('site').style.display = 'block';
+    window.scrollTo(0, 0);
+    loader.classList.remove('active');
+    burstConfetti();
+  }, 1400);
+});
+
+function burstConfetti() {
+  const colors = ['#d4af37', '#f4d675', '#f5ead6', '#e5c158'];
+  for (let i = 0; i < 40; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const size = 5 + Math.random() * 6;
+    piece.style.width = size + 'px';
+    piece.style.height = (size * 0.4) + 'px';
+    piece.style.left = Math.random() * 100 + 'vw';
+    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+    piece.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 3800);
+  }
+}
+
+document.getElementById('replay-btn').addEventListener('click', () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const els = document.querySelectorAll(
+    '#thread-path, .entrance-title, .entrance-sub, .countdown, .scroll-cue'
+  );
+  els.forEach(el => {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+  });
+  setTimeout(burstConfetti, 300);
+  buzz(20);
+});
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  document.getElementById('site').style.display = 'none';
+  document.getElementById('form-screen').style.display = 'flex';
+  document.getElementById('rakhi-form').reset();
+  photoPreview.style.display = 'none';
+  data = { sister: '', brother: '', message: '', photos: [], siblings: [], voice: '', vibe: 'emotional', design: 'thread' };
+  document.body.classList.remove('vibe-playful', 'vibe-funny');
+  galleryIndex = 0;
+  siblingsList.innerHTML = '';
+  voicePreview.style.display = 'none';
+
+  // reset tie-the-rakhi interaction and re-lock sections
+  document.getElementById('wrist-target').classList.remove('tied', 'drop-hover');
+  document.getElementById('rakhi-drag').classList.remove('tied');
+  document.getElementById('tie-hint').classList.remove('done');
+  document.getElementById('cards-section').style.display = 'none';
+  document.getElementById('finale-section').style.display = 'none';
+
+  // re-trigger the staggered entrance animation on the form fields
+  document.querySelectorAll('.field, .submit-btn, .form-hint').forEach(el => {
+    el.style.animation = 'none';
+    void el.offsetWidth; // reflow to restart animation
+    el.style.animation = '';
+  });
+});
+
+function buildSite() {
+  const t = T[lang];
+  document.getElementById('sub-names').textContent = `${data.sister} & ${data.brother}`;
+  document.body.classList.remove('vibe-playful', 'vibe-funny');
+  if (data.vibe === 'playful') document.body.classList.add('vibe-playful');
+  if (data.vibe === 'funny') document.body.classList.add('vibe-funny');
+
+  const designEmoji = { thread: '🧵', kalash: '🪔', rudraksha: '📿' };
+  document.getElementById('rakhi-drag').textContent = designEmoji[data.design] || '🧵';
+  document.getElementById('entrance-title').textContent = t.entranceTitle;
+  document.getElementById('tie-title').textContent = t.tieTitle;
+  if (!tied) document.getElementById('tie-hint').textContent = t.tieHint;
+
+  const [rf, rb] = t.raksha(data.sister, data.brother);
+  document.getElementById('card-raksha-front').textContent = rf;
+  document.getElementById('card-raksha-back').textContent = rb;
+
+  const [mf, mb] = t.memory(data.sister, data.brother);
+  document.getElementById('card-memory-back').textContent = mb;
+
+  const [pf, pb] = t.promise(data.sister, data.brother);
+  document.getElementById('card-promise-front').textContent = pf;
+  document.getElementById('card-promise-back').textContent = pb;
+
+  document.getElementById('photo-caption').textContent = t.photoCaption;
+  const galleryEl = document.getElementById('photo-gallery');
+  const galleryNav = document.getElementById('gallery-nav');
+  galleryEl.innerHTML = '';
+  if (data.photos && data.photos.length) {
+    data.photos.forEach((src, i) => {
+      const img = document.createElement('img');
+      img.src = src;
+      if (i === 0) img.classList.add('active');
+      galleryEl.appendChild(img);
+    });
+    document.getElementById('photo-card-el').style.display = 'flex';
+    galleryIndex = 0;
+    if (data.photos.length > 1) {
+      galleryNav.style.display = 'flex';
+      document.getElementById('gallery-count').textContent = `1 / ${data.photos.length}`;
+    } else {
+      galleryNav.style.display = 'none';
+    }
+  } else {
+    document.getElementById('photo-card-el').style.display = 'none';
+  }
+
+  // extra sibling cards
+  const grid = document.getElementById('extra-siblings-grid');
+  grid.innerHTML = '';
+  data.siblings.forEach(name => {
+    const [sf, sb] = t.siblingCard(name);
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.setAttribute('data-tilt', '');
+    card.onclick = () => { card.classList.toggle('flipped'); buzz(15); };
+    card.innerHTML = `<div class="icon">🎗</div><h3>${name}</h3>
+      <p class="front-text">${sf}</p><p class="back-text">${sb}</p>
+      <div class="flip-hint">${t.flipHint}</div>`;
+    grid.appendChild(card);
+    card.addEventListener('mousemove', tiltHandler);
+    card.addEventListener('mouseleave', () => { card.style.transform = 'rotateY(0) rotateX(0)'; });
+  });
+
+  document.getElementById('finale-heading').textContent = t.finaleHeading(data.sister);
+  typeMessage(document.getElementById('finale-message'), data.message || t.finaleDefault(data.sister, data.brother));
+  document.getElementById('whatsapp-btn').textContent = t.whatsappBtn;
+  document.getElementById('download-btn').textContent = t.downloadBtn;
+  document.querySelector('.qr-label').textContent = t.qrLabel;
+
+  const waText = encodeURIComponent(data.message || t.waDefault(data.sister));
+  document.getElementById('whatsapp-btn').onclick = () => window.open(`https://wa.me/?text=${waText}`, '_blank');
+
+  // voice message playback attached to finale, if recorded
+  let voiceEl = document.getElementById('finale-voice');
+  if (data.voice) {
+    if (!voiceEl) {
+      voiceEl = document.createElement('audio');
+      voiceEl.id = 'finale-voice';
+      voiceEl.controls = true;
+      voiceEl.style.marginTop = '1rem';
+      voiceEl.style.width = '100%';
+      document.getElementById('finale-message').insertAdjacentElement('afterend', voiceEl);
+    }
+    voiceEl.src = data.voice;
+    voiceEl.style.display = 'block';
+  } else if (voiceEl) {
+    voiceEl.style.display = 'none';
+  }
+
+  // QR code of this page's link
+  const qrBox = document.getElementById('qrcode');
+  qrBox.innerHTML = '';
+  new QRCode(qrBox, { text: window.location.href, width: 120, height: 120, colorDark: '#4a0e0e', colorLight: '#ffffff' });
+
+  startCountdown();
+}
+
+function tiltHandler(e) {
+  const card = e.currentTarget;
+  const r = card.getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width - 0.5;
+  const y = (e.clientY - r.top) / r.height - 0.5;
+  card.style.transform = `rotateY(${x * 16}deg) rotateX(${-y * 16}deg) translateZ(8px)`;
+}
+
+// ---------- haptic feedback ----------
+function buzz(ms) { if (navigator.vibrate) navigator.vibrate(ms); }
+
+// ---------- scratch-to-reveal memory card ----------
+function initScratchCard() {
+  const canvas = document.getElementById('scratch-canvas');
+  const zone = canvas.parentElement;
+  const cardEl = document.getElementById('memory-card-el');
+  if (!canvas || cardEl.dataset.revealed === 'true') return;
+  const ctx = canvas.getContext('2d');
+  function sizeCanvas() {
+    canvas.width = zone.clientWidth;
+    canvas.height = zone.clientHeight;
+    ctx.fillStyle = '#8a6a1f';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(245,234,214,0.9)';
+    ctx.font = '13px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText('✨ scratch here ✨', canvas.width / 2, canvas.height / 2);
+  }
+  sizeCanvas();
+  window.addEventListener('resize', () => { if (cardEl.dataset.revealed !== 'true') sizeCanvas(); });
+
+  let scratching = false;
+  let scratchedPct = 0;
+
+  function scratchAt(x, y) {
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath();
+    ctx.arc(x, y, 18, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const point = e.touches ? e.touches[0] : e;
+    return { x: point.clientX - r.left, y: point.clientY - r.top };
+  }
+  function checkRevealProgress() {
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+    let cleared = 0;
+    for (let i = 3; i < imgData.length; i += 4 * 20) if (imgData[i] === 0) cleared++;
+    scratchedPct = cleared / (imgData.length / (4 * 20));
+    if (scratchedPct > 0.45) revealCard();
+  }
+  function revealCard() {
+    cardEl.classList.add('revealed');
+    cardEl.dataset.revealed = 'true';
+    document.getElementById('scratch-hint').textContent = '';
+    buzz(20);
+  }
+  function start(e) { scratching = true; const p = getPos(e); scratchAt(p.x, p.y); }
+  function move(e) { if (!scratching) return; const p = getPos(e); scratchAt(p.x, p.y); checkRevealProgress(); }
+  function end() { scratching = false; }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, { passive: true });
+  canvas.addEventListener('touchmove', move, { passive: true });
+  canvas.addEventListener('touchend', end);
+}
+
+// ---------- typewriter effect for finale message ----------
+let typeTimer = null;
+function typeMessage(el, text) {
+  clearTimeout(typeTimer);
+  el.textContent = '';
+  delete el.dataset.typed;
+  el.dataset.fullText = text;
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !el.dataset.typed) {
+        el.dataset.typed = 'true';
+        let i = 0;
+        (function step() {
+          el.textContent = text.slice(0, i);
+          i++;
+          if (i <= text.length) typeTimer = setTimeout(step, 22);
+        })();
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.4 });
+  observer.observe(el);
+}
+
+// ---------- photo gallery navigation ----------
+document.getElementById('gallery-prev').addEventListener('click', () => shiftGallery(-1));
+document.getElementById('gallery-next').addEventListener('click', () => shiftGallery(1));
+function shiftGallery(dir) {
+  if (!data.photos || data.photos.length < 2) return;
+  const imgs = document.querySelectorAll('#photo-gallery img');
+  imgs[galleryIndex].classList.remove('active');
+  galleryIndex = (galleryIndex + dir + imgs.length) % imgs.length;
+  imgs[galleryIndex].classList.add('active');
+  document.getElementById('gallery-count').textContent = `${galleryIndex + 1} / ${imgs.length}`;
+  buzz(15);
+}
+
+// ---------- tie the rakhi interaction ----------
+const wristTarget = document.getElementById('wrist-target');
+const rakhiDrag = document.getElementById('rakhi-drag');
+let tied = false;
+
+function completeTie() {
+  if (tied) return;
+  tied = true;
+  wristTarget.classList.add('tied');
+  rakhiDrag.classList.add('tied');
+  document.getElementById('tie-hint').textContent = lang === 'hi' ? 'Rakhi baandh di gayi ✓' : 'Rakhi tied ✓';
+  document.getElementById('tie-hint').classList.add('done');
+  buzz([20, 40, 20]);
+  document.getElementById('cards-section').style.display = 'block';
+  document.getElementById('finale-section').style.display = 'block';
+  setTimeout(initScratchCard, 50);
+}
+
+// desktop drag & drop
+rakhiDrag.addEventListener('dragend', (e) => {
+  const r = wristTarget.getBoundingClientRect();
+  if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) completeTie();
+});
+wristTarget.addEventListener('dragover', (e) => { e.preventDefault(); wristTarget.classList.add('drop-hover'); });
+wristTarget.addEventListener('dragleave', () => wristTarget.classList.remove('drop-hover'));
+wristTarget.addEventListener('drop', (e) => { e.preventDefault(); wristTarget.classList.remove('drop-hover'); completeTie(); });
+
+// touch / mobile drag support
+let touchActive = false;
+rakhiDrag.addEventListener('touchstart', () => { touchActive = true; }, { passive: true });
+rakhiDrag.addEventListener('touchmove', (e) => {
+  if (!touchActive || tied) return;
+  const t = e.touches[0];
+  const r = wristTarget.getBoundingClientRect();
+  const over = t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom;
+  wristTarget.classList.toggle('drop-hover', over);
+}, { passive: true });
+rakhiDrag.addEventListener('touchend', (e) => {
+  if (!touchActive || tied) return;
+  touchActive = false;
+  const t = e.changedTouches[0];
+  const r = wristTarget.getBoundingClientRect();
+  if (t.clientX >= r.left && t.clientX <= r.right && t.clientY >= r.top && t.clientY <= r.bottom) completeTie();
+  else wristTarget.classList.remove('drop-hover');
+});
+// simple tap fallback (accessibility)
+wristTarget.addEventListener('click', () => { if (!tied) completeTie(); });
+
+// ---------- reaction / emoji burst button ----------
+document.getElementById('reaction-btn').addEventListener('click', () => {
+  const emojis = ['🌸', '🪔', '🎉', '🧵', '💛', '✨'];
+  for (let i = 0; i < 14; i++) {
+    const el = document.createElement('div');
+    el.className = 'reaction-emoji';
+    el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+    el.style.left = (10 + Math.random() * 80) + 'vw';
+    el.style.bottom = '4rem';
+    el.style.animationDelay = (Math.random() * 0.3) + 's';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2600);
+  }
+  buzz(20);
+});
+
+// ---------- dark/light theme toggle ----------
+document.getElementById('theme-toggle').addEventListener('click', function () {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  document.body.classList.toggle('light-theme', theme === 'light');
+  this.textContent = theme === 'dark' ? '🌙' : '☀';
+});
+
+// ---------- ambient sound loop (extends chime into a soft repeating loop) ----------
+let ambientInterval = null;
+
+// ---------- countdown to Raksha Bandhan 28 Aug 2026 ----------
+function startCountdown() {
+  const target = new Date('2026-08-28T00:00:00');
+  function tick() {
+    const diff = target - new Date();
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '🎉';
+      document.getElementById('cd-hours').textContent = '';
+      document.getElementById('cd-mins').textContent = '';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    document.getElementById('cd-days').textContent = d;
+    document.getElementById('cd-hours').textContent = h;
+    document.getElementById('cd-mins').textContent = m;
+    setTimeout(tick, 30000);
+  }
+  tick();
+}
+
+// ---------- tilt cards ----------
+document.querySelectorAll('[data-tilt]').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width - 0.5;
+    const y = (e.clientY - r.top) / r.height - 0.5;
+    card.style.transform = `rotateY(${x * 16}deg) rotateX(${-y * 16}deg) translateZ(8px)`;
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform = 'rotateY(0) rotateX(0)'; });
+});
+
+// ---------- language toggle ----------
+document.getElementById('lang-toggle').addEventListener('click', () => {
+  lang = lang === 'hi' ? 'en' : 'hi';
+  document.getElementById('lang-toggle').textContent = lang === 'hi' ? 'EN' : 'हिं';
+  document.getElementById('section-title-text').textContent = T[lang].sectionTitle;
+  document.querySelector('footer').textContent = T[lang].footer;
+  applyFormLabels();
+  if (data.sister) buildSite(); // re-render dynamic content if site already built
+});
+
+// ---------- print ----------
+document.getElementById('print-btn').addEventListener('click', () => window.print());
+
+// ---------- form label translation ----------
+function applyFormLabels() {
+  const t = T[lang];
+  document.getElementById('form-title-text').textContent = t.formTitle;
+  document.querySelector('label[for="sisterName"]').textContent = t.sisterLabel;
+  document.querySelector('label[for="brotherName"]').textContent = t.brotherLabel;
+  document.querySelector('label[for="message"]').textContent = t.messageLabel;
+  document.querySelector('label.file-btn[for="photoInput"]').textContent = t.photoLabel;
+  document.getElementById('add-sibling-btn').textContent = t.addSiblingBtn;
+  document.getElementById('record-btn').textContent = isRecording ? t.recordingBtn : t.recordBtn;
+  document.getElementById('submit-btn-text').textContent = t.submitBtn;
+  document.querySelector('.form-hint').textContent = t.formHint;
+  renderUsageCounter();
+}
+
+// ---------- live usage counter (localStorage, per-device) ----------
+function getUsageCount() { return parseInt(localStorage.getItem('rakhiSiteUsageCount') || '0', 10); }
+function bumpUsageCount() {
+  const n = getUsageCount() + 1;
+  localStorage.setItem('rakhiSiteUsageCount', n);
+  return n;
+}
+function renderUsageCounter() {
+  const n = getUsageCount();
+  const el = document.getElementById('usage-counter');
+  if (!el) return;
+  el.textContent = lang === 'hi'
+    ? `✦ is device se ab tak ${n} bar bandhan bana hai`
+    : `✦ tied ${n} time${n === 1 ? '' : 's'} on this device`;
+}
+
+// ---------- ambient sound (soft looping temple-bell chime, no external file) ----------
+let audioCtx = null, soundOn = false;
+document.getElementById('sound-toggle').addEventListener('click', function () {
+  soundOn = !soundOn;
+  this.textContent = soundOn ? '🔔' : '🔇';
+  if (soundOn) {
+    playChime();
+    ambientInterval = setInterval(playChime, 6000);
+  } else if (ambientInterval) {
+    clearInterval(ambientInterval);
+    ambientInterval = null;
+  }
+});
+function playChime() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const now = audioCtx.currentTime;
+  [523.25, 659.25, 783.99].forEach((freq, i) => {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, now + i * 0.15);
+    gain.gain.linearRampToValueAtTime(0.15, now + i * 0.15 + 0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 1.2);
+    osc.connect(gain).connect(audioCtx.destination);
+    osc.start(now + i * 0.15);
+    osc.stop(now + i * 0.15 + 1.3);
+  });
+}
+
+// ---------- download wish card (auto-named slug) ----------
+function slugify(str) {
+  return (str || '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+document.getElementById('download-btn').addEventListener('click', () => {
+  const el = document.querySelector('.finale-card');
+  html2canvas(el, { backgroundColor: theme === 'light' ? '#fff6e8' : '#2a0808', scale: 2 }).then(canvas => {
+    const link = document.createElement('a');
+    const slug = `raksha-${slugify(data.sister)}-${slugify(data.brother)}` || 'raksha-bandhan-wish';
+    link.download = `${slug}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    buzz(20);
+  });
+});
+
+// ---------- particle grid background (gold theme) ----------
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+function resize() { canvas.width = innerWidth; canvas.height = Math.max(document.body.scrollHeight, innerHeight); }
+resize();
+window.addEventListener('resize', resize);
+
+const spacing = 46;
+let points = [];
+function buildGrid() {
+  points = [];
+  for (let x = 0; x < canvas.width + spacing; x += spacing) {
+    for (let y = 0; y < canvas.height + spacing; y += spacing) {
+      points.push({ x, y, baseX: x, baseY: y });
+    }
+  }
+}
+buildGrid();
+
+let mx = -1000, my = -1000;
+window.addEventListener('mousemove', (e) => { mx = e.clientX; my = e.clientY + window.scrollY; });
+
+let time = 0;
+function draw() {
+  time += 0.008;
+  if (points.length && canvas.height !== document.body.scrollHeight) resize(), buildGrid();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'rgba(212,175,55,0.35)';
+  points.forEach(p => {
+    const wave = Math.sin(time + p.baseX * 0.02 + p.baseY * 0.02) * 2.5;
+    const dx = p.baseX - mx, dy = p.baseY - my;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const push = dist < 110 ? (110 - dist) / 110 * 10 : 0;
+    p.x = p.baseX + (dx / (dist || 1)) * push;
+    p.y = p.baseY + (dy / (dist || 1)) * push + wave;
+    const size = dist < 110 ? 1.8 + push * 0.12 : 1;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+renderUsageCounter();
+
+// ---------- easter egg: tap the credit tag 5 times ----------
+let creditTaps = 0, creditTapTimer = null;
+document.addEventListener('DOMContentLoaded', () => {
+  const tag = document.querySelector('.credit-tag');
+  if (!tag) return;
+  tag.style.cursor = 'pointer';
+  tag.addEventListener('click', () => {
+    creditTaps++;
+    clearTimeout(creditTapTimer);
+    creditTapTimer = setTimeout(() => { creditTaps = 0; }, 1500);
+    if (creditTaps >= 5) {
+      creditTaps = 0;
+      burstConfetti();
+      const emojis = ['🧵', '🪔', '💛', '✨'];
+      for (let i = 0; i < 24; i++) {
+        const el = document.createElement('div');
+        el.className = 'reaction-emoji';
+        el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        el.style.left = (5 + Math.random() * 90) + 'vw';
+        el.style.bottom = (Math.random() * 40) + 'vh';
+        el.style.animationDelay = (Math.random() * 0.4) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2800);
+      }
+      buzz([30, 30, 30, 30]);
+      tag.textContent = '✦ you found the secret thread ✦';
+      setTimeout(() => { tag.textContent = '✦ crafted by Aayush'; }, 3000);
+    }
+  });
+});
+</script>
+</body>
+</html>
